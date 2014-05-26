@@ -101,4 +101,19 @@ class Attendance(models.Model):
     date                        =  models.DateField(blank=True,null=True,default = None) 
     attendance                  =  models.CharField(max_length=100,choices=ATTENDANCE,default='Unknown')
 
-    
+
+class Department(models.Model):
+    def __unicode__(self):
+        return u'%s:%s:%s' % (self.id, self.name, self.key)
+    name            = models.CharField(max_length=100,blank=False,null=False)
+    name_l          = models.CharField(max_length=100,blank=True,null=True)
+    key             = models.CharField(max_length=200,blank=False,null=False,unique=True)
+
+class Question(models.Model):
+    def __unicode__(self):
+        return u'%s:%s:%s' % (self.id, self.question)
+    session                     =  models.ForeignKey(Session) 
+    representative              =  models.ForeignKey(Representative) 
+    department                  =  models.ForeignKey(Department) 
+    date                        =  models.DateField(blank=True,null=True,default = None) 
+    question                    =  models.CharField(max_length=2000)         

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Representative, Role, Party, Constituency, Assembly, Session, RepRole, Attendance
+from models import Representative, Role, Party, Constituency, Assembly, Session, RepRole, Attendance, Department, Question
 
 class RepresentativeAdmin(admin.ModelAdmin):
     list_display = ('name' ,'name_l','key' ,'gender','birth_year','has_picture','qualification','all_time_attendance_percentage', 'all_time_no_questions_asked')
@@ -149,7 +149,45 @@ class AttendanceAdmin(admin.ModelAdmin):
             return actions
         return None
 
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('name','name_l','key')
+    #list_filter = ['name',]
+    search_fields = ('name',)
 
+    def get_list_display(self, request):
+        display_list = list(super(DepartmentAdmin,self).get_list_display(request))
+        return display_list
+
+    def get_actions(self, request):
+        actions = super(DepartmentAdmin, self).get_actions(request)
+        groups = request.user.groups.all().values_list('name',flat=True)
+        if request.user.is_superuser  :
+            if 'delete_selected' in actions:
+                del actions['delete_selected']            
+            return actions
+        return None
+
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('session','representative','department','date','question')
+    list_filter = ['session','department']
+    search_fields = ('question',)
+
+    def get_list_display(self, request):
+        display_list = list(super(QuestionAdmin,self).get_list_display(request))
+        return display_list
+
+    def get_actions(self, request):
+        actions = super(QuestionAdmin, self).get_actions(request)
+        groups = request.user.groups.all().values_list('name',flat=True)
+        if request.user.is_superuser  :
+            if 'delete_selected' in actions:
+                del actions['delete_selected']            
+            return actions
+        return None
+
+
+admin.site.register(Department,DepartmentAdmin)
+admin.site.register(Question,QuestionAdmin)
 admin.site.register(Attendance,AttendanceAdmin)
 admin.site.register(Assembly,AssemblyAdmin)
 admin.site.register(Session,SessionAdmin)
