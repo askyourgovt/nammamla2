@@ -116,7 +116,7 @@ class SessionAdmin(admin.ModelAdmin):
 class RepRoleAdmin(admin.ModelAdmin):
     list_display = ('representative','constituency','party','assembly', 'role','start','end','has_ec_affidavit')
     list_filter = ['party','assembly']
-    search_fields = ('representative','constituency')
+    search_fields = ('representative',)
 
     def get_list_display(self, request):
         display_list = list(super(RepRoleAdmin,self).get_list_display(request))
