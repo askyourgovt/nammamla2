@@ -18,6 +18,14 @@ ATTENDANCE =(
     ('N.A','N.A'),
 )
 
+class State(models.Model):
+    def __unicode__(self):
+        return u'%s:%s:%s' % (self.id, self.name, self.key)
+    name            = models.CharField(max_length=200,blank=False,null=False)
+    name_l          = models.CharField(max_length=200,blank=True,null=True)
+    key             = models.CharField(max_length=200,blank=False,null=False,unique=True)
+
+
 class Representative(models.Model):
     def __unicode__(self):
         return u'%s:%s:%s' % (self.id, self.name, self.key)
@@ -47,6 +55,7 @@ class Assembly(models.Model):
     key             = models.CharField(max_length=200,blank=False,null=False,unique=True)
     start           = models.DateField(blank=True,null=True,default = None) 
     end             = models.DateField(blank=True,null=True,default = None) 
+    state           = models.ForeignKey(State) 
 
 
 class Role(models.Model):

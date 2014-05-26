@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Representative, Role, Party, Constituency, Assembly, Session, RepRole, Attendance, Department, Question
+from models import Representative, Role, Party, Constituency, Assembly, Session, RepRole, Attendance, Department, Question, State
 
 class RepresentativeAdmin(admin.ModelAdmin):
     list_display = ('name' ,'name_l','key' ,'gender','birth_year','has_picture','qualification','all_time_attendance_percentage', 'all_time_no_questions_asked')
@@ -60,7 +60,7 @@ class PartyAdmin(admin.ModelAdmin):
 
 class ConstituencyAdmin(admin.ModelAdmin):
     list_display = ('name','name_l','key','number')
-    list_filter = ['name',]
+    #list_filter = ['name',]
     search_fields = ('name',)
 
     def get_list_display(self, request):
@@ -186,7 +186,28 @@ class QuestionAdmin(admin.ModelAdmin):
         return None
 
 
+
+class StateAdmin(admin.ModelAdmin):
+    list_display = ('name','name_l','key')
+    list_filter = ['name',]
+    search_fields = ('name',)
+
+    def get_list_display(self, request):
+        display_list = list(super(StateAdmin,self).get_list_display(request))
+        return display_list
+
+    def get_actions(self, request):
+        actions = super(StateAdmin, self).get_actions(request)
+        groups = request.user.groups.all().values_list('name',flat=True)
+        if request.user.is_superuser  :
+            if 'delete_selected' in actions:
+                del actions['delete_selected']            
+            return actions
+        return None
+
+
 admin.site.register(Department,DepartmentAdmin)
+admin.site.register(State,StateAdmin)
 admin.site.register(Question,QuestionAdmin)
 admin.site.register(Attendance,AttendanceAdmin)
 admin.site.register(Assembly,AssemblyAdmin)
